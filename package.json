@@ -1,0 +1,16 @@
+{
+  "name": "citywalk-baidu-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "CityWalk planning demo with Baidu Maps and CLI adapters",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/index.mjs",
+    "demo:start": "node --env-file-if-exists=.env scripts/start-background.mjs",
+    "dev": "node --watch --env-file-if-exists=.env server/index.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "cli:check": "node --env-file-if-exists=.env scripts/cli-check.mjs",
+    "baidu:connect": "node scripts/baidu-connect.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

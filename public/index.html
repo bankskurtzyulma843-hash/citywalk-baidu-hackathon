@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#5267df" />
+  <meta name="description" content="用一句话规划 CityWalk，探索城市里的咖啡、街区和湖边散步，在百度地图上看清真实步行路线。" />
+  <title>一起走 · CityWalk 城市探索</title>
+  <link rel="stylesheet" href="/mapus-assets/mapus-controls.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="一起走 CityWalk 首页"><span class="brand-mark" aria-hidden="true">↗</span><span>一起走<span class="brand-english">CITYWALK</span></span></a>
+    <nav id="workspace-navigation" class="nav-tabs" aria-label="工作台视图"><button id="discover-tab" class="nav-tab active" type="button" aria-pressed="true">探索城市</button><button id="route-tab" class="nav-tab" type="button" aria-pressed="false">我的路线<span id="nav-stop-count" hidden></span></button></nav>
+    <div class="source-control"><details class="connection-status"><summary><span class="service-dot" aria-hidden="true"></span><span id="connection-label">正在连接地图</span></summary><label for="data-mode">地图服务</label><select id="data-mode" disabled><option value="demo">示例数据</option><option value="agentplan">百度地图 AgentPlan</option><option value="baidu">百度地图 API</option></select><div id="connection-details">正在检测地图配置…</div></details></div>
+  </header>
+  <main class="workspace">
+    <aside class="planner" aria-label="CityWalk 行程规划">
+      <div class="planner-scroll">
+        <section id="quick-plan-section" class="quick-plan-section" aria-labelledby="plan-heading">
+          <span class="eyebrow">GO A LITTLE FURTHER</span>
+          <h2 id="plan-heading" class="workspace-title">下一站，去城市里。</h2>
+          <p class="workspace-subtitle">找一家咖啡馆，绕进一条小巷。<br />把今天的时间，留给沿途的小发现。</p>
+          <form id="plan-form" class="plan-form"><label class="sr-only" for="plan-input">描述你的散步需求，包括城市、时间和想去的地方</label><span class="plan-search-icon" aria-hidden="true">⌕</span><textarea id="plan-input" name="prompt" rows="2" maxlength="1000" placeholder="北京雍和宫附近，2 小时，逛胡同、喝咖啡…" required></textarea><button id="plan-button" class="button button-plan" type="submit" disabled aria-label="生成散步路线">↗</button></form>
+          <p id="plan-support" class="input-caption">说一句想法，地点和步行路线一起安排。</p>
+        </section>
+        <p id="notice" class="notice" role="status" aria-live="polite" hidden></p>
+        <section id="discover-section" class="discover-section" aria-labelledby="discover-heading">
+          <div class="filter-chips" aria-label="筛选散步主题"><button class="filter-chip active" type="button" data-filter="all" aria-pressed="true">全部</button><button class="filter-chip" type="button" data-filter="coffee" aria-pressed="false">☕ 咖啡</button><button class="filter-chip" type="button" data-filter="street" aria-pressed="false">⌂ 街区</button><button class="filter-chip" type="button" data-filter="nature" aria-pressed="false">↝ 湖边</button></div>
+          <div class="section-heading"><h2 id="discover-heading">从一条喜欢的路线开始</h2><span class="count-label">散步灵感</span></div>
+          <div id="discovery-grid" class="discovery-grid"></div>
+          <p class="photo-credit">图片为主题配图，生成后的地点和道路以百度地图结果为准。<a href="/photos/credits.html" target="_blank" rel="noopener noreferrer">图片来源 ↗</a></p>
+        </section>
+        <section id="route-section" hidden>
+          <div class="intro"><span id="intro-kicker" class="eyebrow">YOUR NEXT WALK</span><h1 id="page-heading">这一程，慢慢走。</h1><p id="intro-description">看清每一站，给喜欢的地方多留一点时间。</p></div>
+          <details id="planning-details" class="planning-details" hidden><summary>路线怎么安排的</summary><p id="planning-summary"></p><p id="planning-warnings"></p></details>
+          <section class="itinerary-section" aria-labelledby="itinerary-heading">
+            <div class="section-heading"><h2 id="itinerary-heading">散步路线</h2><div><span id="stop-count" class="count-label">0 / 5 站</span><button id="clear-button" class="text-button muted" type="button" hidden>清空</button></div></div>
+            <div id="empty-state" class="empty-state"><span class="empty-route" aria-hidden="true">↗</span><h3>留白，等一场好散步。</h3><p>说说今天想怎么逛，<br />或先加一个想去的地方。</p><span class="empty-footnote">选地点 · 排顺序 · 看时间</span></div>
+            <ol id="stop-list" class="stop-list"></ol>
+          </section>
+
+          <section id="search-section" class="search-section" aria-label="为路线添加地点">
+            <div class="add-stop-heading"><h2><span aria-hidden="true">＋</span> 加一站</h2><span>已经有想去的地方？</span></div>
+            <form id="search-form" class="search-form">
+              <label class="field city-field"><span>城市</span><input id="city-input" name="city" value="北京" maxlength="30" autocomplete="off" required /></label>
+              <label class="field keyword-field"><span>地点或偏好</span><div class="search-input-wrap"><input id="keyword-input" name="keyword" placeholder="搜索地点，加入这条路线" maxlength="1000" autocomplete="off" required /><button id="search-button" type="submit" aria-label="搜索地点"><img src="/mapus-assets/search-icon.svg" alt="" /></button></div></label>
+            </form>
+            <div class="search-help"><span>地点、街区，或者一句具体的要求。</span><button id="example-button" class="text-button" type="button">三站示例 ↗</button></div>
+            <div id="search-results" class="search-results" aria-label="地点搜索结果" aria-live="polite"></div>
+          </section>
+          <div id="draft-status" class="draft-status">草稿保存在当前浏览器</div><p class="photo-credit">地点图片为主题配图。<a href="/photos/credits.html" target="_blank" rel="noopener noreferrer">图片来源 ↗</a></p>
+
+        </section>
+      </div>
+        <section id="summary-panel" class="summary-panel" aria-label="行程时间摘要" hidden>
+          <div class="budget-row"><label for="budget-input">留给散步的时间</label><div id="budget-editor" class="minute-input"><input id="budget-input" type="number" min="1" max="1440" step="1" value="180" /><span>分钟</span></div><span id="budget-readonly" hidden></span></div>
+          <div class="summary-grid"><div><span>步行</span><strong id="walking-summary">—<small>分钟</small></strong></div><div><span>停留</span><strong id="stay-summary">0<small>分钟</small></strong></div><div class="summary-total"><span>预计总时间</span><strong id="total-summary">—<small>分钟</small></strong></div></div>
+          <div class="time-progress"><span id="time-progress-fill"></span></div>
+          <p id="budget-message" class="budget-message">加入至少两个地点，就能计算步行路线。</p>
+          <div id="edit-actions" class="action-row"><button id="route-button" class="button button-primary" type="button" disabled>生成步行路线 <span aria-hidden="true">↗</span></button><button id="share-button" class="button button-secondary" type="button" disabled>分享行程</button></div>
+          <div id="readonly-actions" class="action-row" hidden><button id="copy-page-button" class="button button-primary" type="button">复制行程链接</button><a href="/" class="button button-secondary">规划我的行程</a></div>
+          <p id="route-source" class="route-source">步行是估算，停留时间由你安排。</p>
+          <p id="location-note" class="route-source" hidden>当前位置只用于你主动发起的定位功能。</p>
+        </section>
+    </aside>
+    <div class="map-column">
+        <section class="map-panel" aria-label="行程地图">
+          <div id="map" class="map-canvas" aria-label="地图与停靠点"></div>
+          <div class="map-topline"><span id="map-city" class="map-city">北京<span> · 城市探索</span></span><span id="source-badge" class="source-badge">正在读取数据配置</span></div>
+          <div id="map-error" class="map-error" hidden><span class="error-symbol" aria-hidden="true">!</span><h2>地图暂时无法展示</h2><p id="map-error-text"></p><button id="retry-map" class="button button-secondary" type="button">重新加载地图</button></div>
+          <div id="official-map-toolbar" class="official-map-toolbar" hidden><span id="hosted-map-status" role="status" aria-live="polite"></span><select id="official-map-view" aria-label="选择地图视图" hidden></select><button id="retry-official-map" class="text-button" type="button" hidden>重新加载</button><a id="upstream-map-link" class="text-button" target="_blank" rel="noopener noreferrer" hidden>在百度地图查看 ↗</a></div>
+          <button id="fit-map" class="map-fit" type="button" aria-label="在地图上查看全部停靠点" title="查看全部停靠点">⌖</button>
+          <!-- Adapted from Mapus src/index.html:136-139. MIT, Copyright (c) 2021 alyssaxuu. -->
+          <div id="zoom-controls" aria-label="地图缩放" hidden><button id="zoom-in" type="button" aria-label="放大地图"><img src="/mapus-assets/zoomin.svg" alt="" /></button><button id="zoom-out" type="button" aria-label="缩小地图"><img src="/mapus-assets/zoomout.svg" alt="" /></button></div>
+          <div class="map-caption"><span class="route-key" aria-hidden="true"></span><span id="map-caption-text">选一条喜欢的路线，或说说今天想怎么逛。</span></div>
+          <div class="map-credit">基于 <a href="https://github.com/alyssaxuu/mapus" target="_blank" rel="noopener noreferrer">Mapus</a> 二开 · 百度地图能力接入</div>
+        </section>
+    </div>
+  </main>
+    <dialog id="share-dialog" class="share-dialog">
+      <form id="share-form"><div class="dialog-heading"><span class="eyebrow">把散步计划带给朋友</span><button id="close-share" class="icon-button" type="button" aria-label="关闭分享弹窗">×</button></div><h2>这一程，叫什么？</h2><p class="dialog-description">分享页只读。你之后修改计划，不会改变已分享的内容。</p><label class="field"><span>行程名称</span><input id="share-title" maxlength="60" value="一起走 · 北京 CityWalk" required /></label><button id="create-share" class="button button-primary dialog-action" type="submit">生成行程链接 ↗</button></form>
+      <div id="share-result" hidden><label class="field"><span>只读行程链接</span><input id="share-url" readonly /></label><p id="share-expiry" class="dialog-description"></p><div class="action-row"><button id="copy-share" class="button button-primary" type="button">复制链接</button><a id="open-share" class="button button-secondary" target="_blank" rel="noopener noreferrer">打开分享页</a></div></div>
+      <p id="share-error" class="notice" role="status" hidden></p>
+    </dialog>
+    <noscript><p class="noscript">请启用 JavaScript 后使用 CityWalk 行程规划。</p></noscript>
+  </body>
+</html>

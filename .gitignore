@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+.data/
+.tools/
+node_modules/
+.DS_Store
+vendor/**/.git/
+outputs/

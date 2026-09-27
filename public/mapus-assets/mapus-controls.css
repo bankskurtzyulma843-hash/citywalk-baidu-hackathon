@@ -1,0 +1,36 @@
+/* Adapted from Mapus src/styles.css:745-771.
+ * Copyright (c) 2021 alyssaxuu. MIT License, see ./LICENSE.
+ * Original zoom-control rules preserved; fallback colors and button accessibility added.
+ */
+#zoom-controls {
+  position: absolute;
+  right: 11px;
+  bottom: 11px;
+  border-radius: 5px;
+  background-color: #FFF;
+  width: 45px;
+  z-index: 999999;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 -1px 0px rgb(0 0 0 / 2%);
+}
+#zoom-in, #zoom-out {
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  box-sizing: border-box;
+}
+#zoom-in {
+  border-radius: 5px 5px 0px 0px;
+  border-bottom: 1px solid var(--border, #e2e7eb);
+}
+#zoom-out {
+  border-radius: 0px 0px 5px 5px;
+}
+#zoom-in:hover, #zoom-out:hover {
+  cursor: pointer;
+  background: var(--hover-grey, #f3f5f7);
+}
+
+#zoom-controls button { width: 45px; display: block; padding: 0; border: 0; background: transparent; }
+#zoom-controls #zoom-in { border-bottom: 1px solid var(--border, #e2e7eb); }
+#zoom-controls button:focus-visible { outline: 3px solid #2475d6; outline-offset: -3px; }
+#zoom-controls img { vertical-align: middle; }
